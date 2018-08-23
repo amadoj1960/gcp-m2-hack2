@@ -1,0 +1,15 @@
+from sklearn import tree
+from sklearn.externals import joblib
+
+#find out if server is exploding
+#[apps running] , [traffic hits per 100ms]
+features = [[2, 100], [3, 1000]]
+labels = [[0] , [1]]
+
+cfl = tree.DecisionTreeClassifier()
+cfl = cfl.fit(features, labels)
+result = cfl.predict([[3,200]])
+print(result)
+
+joblib.dump(cfl, 'exploding_servers.pkl')
+

@@ -1,0 +1,47 @@
+
+# name of the Endpoint 
+# <teamname>-mlapi-dot-EEP-hackathon.appspot.com
+
+#Edit the apispec.yaml
+
+#Deploy Endpoint
+gcloud endpoints services deploy apispec.yaml
+
+#get Service config ID : [2018-07-27r0]
+gcloud endpoints configs list --service="<<NAME_OF_ENDPOINT>>"
+
+#Make Bucket and Save file to it
+gsutil mb gs://BUCKET_NAME
+gsutil cp lr.pkl gs://BUCKET_NAME
+
+#Edit the app.yaml
+
+#Deploy App
+gcloud app deploy --version <teamname>-app
+
+#Clean Up
+gcloud app services delete <teamname>-mlapi
+
+##### call api via curl or postman
+curl -H "Content-Type: application/json" -X POST -d '{"X":[[1, 2], [5, -1]]}' "https://<<NAME_OF_ENDPOINT>>/predict?key=<<Key>>"
+
+###################
+#### BuildServer
+###################
+#To create a build step on a build server in GCP, use Container Builder.
+#Could put a cloudbuild.yaml inside the project.
+cloudbuild.yaml
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy']
+timeout: '1600s'
+
+
+##################
+## Predict Worldcup
+##################
+https://www.kaggle.com/martj42/international-football-results-from-1872-to-2017/data
+http://scikit-learn.org/stable/_static/ml_map.png
+https://blog.goodaudience.com/predicting-fifa-world-cup-2018-using-machine-learning-dc07ad8dd576
+
+
