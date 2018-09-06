@@ -1,0 +1,117 @@
+cl#### Guided Instruction 
+
+#open console and project
+
+
+##### Open Cloud Shell and Editor. Check shell settings;
+
+gcloud projects list
+gcloud config list
+gcloud auth list
+gcloud auth login
+
+
+
+############################################
+#Access Gcloud Git
+
+git clone https://source.developers.google.com/p/eep-hackathon-p16-bpid-301119/r/EEP-M2-Hack-V2
+
+#Can verify than that the git repo is set correctly 
+git remote -v
+
+#return
+#origin  https://source.developers.google.com/p/eep-hackathon-p15-bpid-301119/r/eep15 (fetch)
+#origin  https://source.developers.google.com/p/eep-hackathon-p15-bpid-301119/r/eep15 (push)
+
+# Create our own branche in git 
+git branch 
+git status
+git checkout -b <teamname>
+git push origin <teamname>
+
+#can also show Unix command like cd, ls ...
+
+############################################
+# part 1.1
+############################################
+# First Machine learning
+
+touch create_ml_model.py
+cloudshell edit create_ml_model.py
+
+# can use what is in the aidpack
+#Show in the Editor what each part does
+
+* show features and labels arrays first
+* train model with algo and make it fail due to missing pip install
+* show pip install/requirements.txt convention
+* export model into file with joblib library
+
+#Install Requirement
+sudo pip install -r requirement.txt
+
+#Execute the machine (and play with Values)
+#can execute several time after changing the values of "predict([[2, 200]])" to get different response code (0 or 1)
+
+python create_ml_model.py
+
+############################################
+# part 1.2
+############################################
+
+##### deploy api
+
+i.e. renaud-eep15-mlapi-dot-eep-hackathon-p15-bpid-301119.appspot.com
+
+eep16.demo-mlapi-dot-eep-p16-hackathon-bpid-301119.appspot.com
+
+``` change first the api yaml name eep15 and endpoint the name and project id
+
+
+gcloud endpoints services deploy apispec.yaml
+
+
+
+>> we get Service Configuration [2018-07-27r0] uploaded for service [eep15-mlapi-dot-eep-hackathon-p15-bpid-301119.appspot.com]
+
+
+gcloud endpoints configs list --service="renaud-eep15-mlapi-dot-eep-hackathon-p15-bpid-301119.appspot.com"
+
+
+>>
+CONFIG_ID     SERVICE_NAME
+2018-07-27r0  eep15-mlapi-dot-eep-hackathon-p15-bpid-301119.appspot.com
+
+```
+
+
+##### TODO add config Id en endpoint to app.yaml 
+and change service name to default
+
+ 
+##### save bucket
+
+ ```
+gsutil mb gs://BUCKET_NAME
+gsutil cp lr.pkl gs://BUCKET_NAME
+
+ie eep15-renaud-mlapi-bucket
+gsutil mb gs://eep15-renaud-mlapi-bucket
+gsutil cp lr.pkl gs://eep15-renaud-mlapi-bucket
+```
+
+##### add bucket names to app.yaml
+
+##### change project ID in app.yaml
+
+ 
+
+```
+
+gcloud app deploy --version <teamname>-app
+
+
+#and test 
+curl -H "Content-Type: application/json" -X POST -d '{"X":[[1, 2], [5, -1]]}' "https://renaud-eep15-mlapi-dot-eep-hackathon-p15-bpid-301119.appspot.com/predict?key=AIzaSyBmfBc2D3kiorcchLhdCgGEObQ5ISiOZ7A"
+curl -H "Content-Type: application/json" -X POST -d '{"X":[[1, 2], [5, -100]]}' "https://renaud-eep15-mlapi-dot-eep-hackathon-p15-bpid-301119.appspot.com/predict?key=AIzaSyBmfBc2D3kiorcchLhdCgGEObQ5ISiOZ7A"
